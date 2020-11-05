@@ -2,7 +2,7 @@ pragma solidity ^0.5.16;
 
 // this contract gives owner the ability to allow tokens. for pairs in which both tokens are allowed, fees may be
 // collected on that pair and send to feeRecipient, though only after burning all fees up to that point
-contract FeeTo {
+contract EliteFeeTo {
     address public owner;
     address public feeRecipient;
 
@@ -23,17 +23,17 @@ contract FeeTo {
     }
 
     function setOwner(address owner_) public {
-        require(msg.sender == owner, 'FeeTo::setOwner: not allowed');
+        require(msg.sender == owner, 'EliteFeeTo::setOwner: not allowed');
         owner = owner_;
     }
 
     function setFeeRecipient(address feeRecipient_) public {
-        require(msg.sender == owner, 'FeeTo::setFeeRecipient: not allowed');
+        require(msg.sender == owner, 'EliteFeeTo::setFeeRecipient: not allowed');
         feeRecipient = feeRecipient_;
     }
 
     function updateTokenAllowState(address token, bool allowed) public {
-        require(msg.sender == owner, 'FeeTo::updateTokenAllowState: not allowed');
+        require(msg.sender == owner, 'EliteFeeTo::updateTokenAllowState: not allowed');
         TokenAllowState storage tokenAllowState = tokenAllowStates[token];
         // if allowed is not changing, the function is a no-op
         if (allowed != tokenAllowState.allowed) {
@@ -57,8 +57,8 @@ contract FeeTo {
 
     function renounce(address pair) public returns (uint value) {
         PairAllowState storage pairAllowState = pairAllowStates[pair];
-        TokenAllowState storage token0AllowState = tokenAllowStates[IUniswapV2Pair(pair).token0()];
-        TokenAllowState storage token1AllowState = tokenAllowStates[IUniswapV2Pair(pair).token1()];
+        TokenAllowState storage token0AllowState = tokenAllowStates[IEliteswapV2Pair(pair).token0()];
+        TokenAllowState storage token1AllowState = tokenAllowStates[IEliteswapV2Pair(pair).token1()];
 
         // we must renounce if any of the following four conditions are true:
         // 1) token0 is currently disallowed
@@ -71,12 +71,12 @@ contract FeeTo {
             token0AllowState.disallowCount > pairAllowState.token0DisallowCount ||
             token1AllowState.disallowCount > pairAllowState.token1DisallowCount
         ) {
-            value = IUniswapV2Pair(pair).balanceOf(address(this));
+            value = IEliteswapV2Pair(pair).balanceOf(address(this));
             if (value > 0) {
                 // burn balance into the pair, effectively redistributing underlying tokens pro-rata back to LPs
                 // (assert because transfer cannot fail with value as balanceOf)
-                assert(IUniswapV2Pair(pair).transfer(pair, value));
-                IUniswapV2Pair(pair).burn(pair);
+                assert(IEliteswapV2Pair(pair).transfer(pair, value));
+                IEliteswapV2Pair(pair).burn(pair);
             }
 
             // if token0 is allowed, we can now update the pair's disallow count to match the token's
@@ -92,8 +92,8 @@ contract FeeTo {
 
     function claim(address pair) public returns (uint value) {
         PairAllowState storage pairAllowState = pairAllowStates[pair];
-        TokenAllowState storage token0AllowState = tokenAllowStates[IUniswapV2Pair(pair).token0()];
-        TokenAllowState storage token1AllowState = tokenAllowStates[IUniswapV2Pair(pair).token1()];
+        TokenAllowState storage token0AllowState = tokenAllowStates[IEliteswapV2Pair(pair).token0()];
+        TokenAllowState storage token1AllowState = tokenAllowStates[IEliteswapV2Pair(pair).token1()];
 
         // we may claim only if each of the following five conditions are true:
         // 1) token0 is currently allowed
@@ -108,16 +108,16 @@ contract FeeTo {
             token1AllowState.disallowCount == pairAllowState.token1DisallowCount &&
             feeRecipient != address(0)
         ) {
-            value = IUniswapV2Pair(pair).balanceOf(address(this));
+            value = IEliteswapV2Pair(pair).balanceOf(address(this));
             if (value > 0) {
                 // transfer tokens to the handler (assert because transfer cannot fail with value as balanceOf)
-                assert(IUniswapV2Pair(pair).transfer(feeRecipient, value));
+                assert(IEliteswapV2Pair(pair).transfer(feeRecipient, value));
             }
         }
     }
 }
 
-interface IUniswapV2Pair {
+interface IEliteswapV2Pair {
     function token0() external view returns (address);
     function token1() external view returns (address);
     function balanceOf(address owner) external view returns (uint);
