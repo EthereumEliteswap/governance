@@ -39,7 +39,7 @@ describe('Elt', () => {
     const domainSeparator = utils.keccak256(
       utils.defaultAbiCoder.encode(
         ['bytes32', 'bytes32', 'uint256', 'address'],
-        [DOMAIN_TYPEHASH, utils.keccak256(utils.toUtf8Bytes('Eliteswap')), 1, elt.address]
+        [DOMAIN_TYPEHASH, utils.keccak256(utils.toUtf8Bytes('Elite Swap')), 1, elt.address]
       )
     )
 
