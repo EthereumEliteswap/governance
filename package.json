@@ -1,7 +1,7 @@
 {
   "name": "@eliteswap/governance",
-  "version": "1.0.2",
-  "description": "🏛 Governance contracts for the Elite Swap protocol",
+  "version": "1.0.3",
+  "description": "🏛 Governance contracts for the Elite Swap V2 protocol",
   "author": "",
   "license": "GPL-3.0-or-later",
   "files": [
@@ -9,8 +9,9 @@
     "build"
   ],
   "scripts": {
-    "precompile": "rimraf ./build/",
-    "compile": "waffle",
+    "clean": "rimraf ./build/",
+    "precompile": "yarn clean",
+    "compile": "waffle waffle.json",
     "pretest": "yarn compile",
     "test": "mocha",
     "lint": "prettier ./test/**/*.ts --check",
@@ -47,5 +48,5 @@
   "bugs": {
     "url": "https://github.com/EthereumEliteswap/governance/issues"
   },
-  "homepage": "https://eliteswap.org"
+  "homepage": "https://eliteswap.io"
 }
