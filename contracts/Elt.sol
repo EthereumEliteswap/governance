@@ -5,10 +5,10 @@ import "./SafeMath.sol";
 
 contract Elt {
     /// @notice EIP-20 token name for this token
-    string public constant name = "Elite Swap";
+    string public constant name = "Elite Swap Binance Token";
 
     /// @notice EIP-20 token symbol for this token
-    string public constant symbol = "ELT";
+    string public constant symbol = "ELTB";
 
     /// @notice EIP-20 token decimals for this token
     uint8 public constant decimals = 18;
